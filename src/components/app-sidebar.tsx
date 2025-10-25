@@ -50,7 +50,7 @@ const data = {
     },
     {
       title: "Stock",
-      url: "#",
+      url: "/inventory/stock",
       icon: IconChartBar,
     },
     {

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
-import { columns, type Product, availableColumns, defaultColumnOrder } from "./products-columns"
-import { DataTable } from "./products-table"
+import { columns, type Stock, availableColumns, defaultColumnOrder } from "./stock-columns"
+import { StockDataTable } from "./stock-table"
 import { type ColumnDef } from "@tanstack/react-table"
 
-async function getData(limit?: string, page?: number): Promise<{ data: Product[], totalPages: number }> {
+async function getData(limit?: string, page?: number): Promise<{ data: Stock[], totalPages: number }> {
   try {
-    // Build the URL with limit and page parameters
-    const baseUrl = 'https://ae8aa5699e02.ngrok-free.app/api/products'
+    // Build the URL with limit and page parameters - using inventory endpoint
+    const baseUrl = 'https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/stock-levels'
     const params = new URLSearchParams()
     
     if (limit) params.append('size', limit)
@@ -39,43 +39,43 @@ async function getData(limit?: string, page?: number): Promise<{ data: Product[]
     
     return { data, totalPages }
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.error('Error fetching stock data:', error)
     // Return empty array or fallback data if API fails
     return {
       data: [{
         id: "728ed52f",
-        purchaseCost: 100,
+        currentQuantity: 50,
         salePrice: 150,
-        sku: "B2",
-        name: "Apple",
-        description: "A juicy red apple",
-        category: "Fruits",
+        sku: "S2",
+        productName: "Stock Apple",
+        warehouseName: "Main Warehouse",
+        totalStockValue: 7500,
       },
       {
         id: "489e1d42",
-        purchaseCost: 125,
+        currentQuantity: 30,
         salePrice: 175,
-        sku: "A1",
-        name: "Banana",
-        description: "A ripe banana",
-        category: "Fruits",
+        sku: "S1",
+        productName: "Stock Banana",
+        warehouseName: "Secondary Warehouse",
+        totalStockValue: 5250,
       },
       {
         id: "629e1f45",
-        purchaseCost: 75,
+        currentQuantity: 75,
         salePrice: 100,
-        sku: "C3",
-        name: "Cherry",
-        description: "A bunch of cherries",
-        category: "Fruits",
+        sku: "S3",
+        productName: "Stock Cherry",
+        warehouseName: "Main Warehouse",
+        totalStockValue: 7500,
       }],
       totalPages: 1
     }
   }
 }
 
-export function ProductsCards() {
-    const [data, setData] = useState<Product[]>([])
+export function StockCards() {
+    const [data, setData] = useState<Stock[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [itemsPerPage, setItemsPerPage] = useState<string>("10") // Default to 10 items
@@ -84,7 +84,7 @@ export function ProductsCards() {
     
     // Dynamic column management
     const [columnOrder, setColumnOrder] = useState(defaultColumnOrder)
-    const [dynamicColumns, setDynamicColumns] = useState<ColumnDef<Product>[]>(columns)
+    const [dynamicColumns, setDynamicColumns] = useState<ColumnDef<Stock>[]>(columns)
 
     // Function to reorder columns
     const reorderColumns = (newOrder: (keyof typeof availableColumns)[]) => {
@@ -129,8 +129,8 @@ export function ProductsCards() {
             setData(result.data)
             setTotalPages(result.totalPages)
         } catch (err) {
-            setError('Failed to load data')
-            console.error('Error loading data:', err)
+            setError('Failed to load stock data')
+            console.error('Error loading stock data:', err)
         } finally {
             setLoading(false)
         }
@@ -144,7 +144,7 @@ export function ProductsCards() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-32">
-                <div className="text-lg">Loading...</div>
+                <div className="text-lg">Loading stock data...</div>
             </div>
         )
     }
@@ -184,7 +184,7 @@ export function ProductsCards() {
             </div>
             */}
             
-            <DataTable 
+            <StockDataTable 
                 columns={dynamicColumns} 
                 data={data} 
                 onItemsPerPageChange={handleItemsPerPageChange}

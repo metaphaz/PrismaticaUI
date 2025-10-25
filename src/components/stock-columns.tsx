@@ -6,14 +6,14 @@ import { IconArrowsSort, IconSortAscending, IconSortDescending } from "@tabler/i
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Product = {
+export type Stock = {
   id: string
-  purchaseCost: number
+  currentQuantity: number
   salePrice: number
   sku: string
-  name: string
-  description: string
-  category: string
+  productName: string
+  warehouseName: string
+  totalStockValue: number
 }
 
 // Column configuration object for easy reordering and customization
@@ -62,8 +62,8 @@ const columnConfig = {
     },
     size: 120,
   },
-  name: {
-    accessorKey: "name", 
+  productName: {
+    accessorKey: "productName", 
     header: ({ column }: any) => {
       return (
         <Button
@@ -84,8 +84,8 @@ const columnConfig = {
     },
     size: 200,
   },
-  purchaseCost: {
-    accessorKey: "purchaseCost",
+  totalStockValue: {
+    accessorKey: "totalStockValue",
     header: ({ column }: any) => {
       return (
         <div className="text-right">
@@ -94,7 +94,7 @@ const columnConfig = {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="h-8 p-0"
           >
-            Purchase Cost
+            Total Stock Value
             {column.getIsSorted() === "asc" ? (
               <IconSortAscending className="ml-2 h-4 w-4" />
             ) : column.getIsSorted() === "desc" ? (
@@ -108,11 +108,11 @@ const columnConfig = {
     },
     size: 120,
     cell: ({ row }: any) => {
-      const purchaseCost = parseFloat(row.getValue("purchaseCost"))
+      const totalStockValue = parseFloat(row.getValue("totalStockValue"))
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
-      }).format(purchaseCost)
+      }).format(totalStockValue)
 
       return <div className="text-right font-medium">{formatted}</div>
     },
@@ -150,8 +150,8 @@ const columnConfig = {
       return <div className="text-right font-medium">{formatted}</div>
     },
   },
-  description: {
-    accessorKey: "description",
+  warehouseName: {
+    accessorKey: "warehouseName",
     header: ({ column }: any) => {
       return (
         <Button
@@ -159,7 +159,7 @@ const columnConfig = {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-8 p-0"
         >
-          Description
+          Warehouse Name
           {column.getIsSorted() === "asc" ? (
             <IconSortAscending className="ml-2 h-4 w-4" />
           ) : column.getIsSorted() === "desc" ? (
@@ -172,8 +172,8 @@ const columnConfig = {
     },
     size: 300,
   },
-  category: {
-    accessorKey: "category",
+  currentQuantity: {
+    accessorKey: "currentQuantity",
     header: ({ column }: any) => {
       return (
         <Button
@@ -181,7 +181,7 @@ const columnConfig = {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-8 p-0"
         >
-          Category
+          Current Quantity
           {column.getIsSorted() === "asc" ? (
             <IconSortAscending className="ml-2 h-4 w-4" />
           ) : column.getIsSorted() === "desc" ? (
@@ -199,16 +199,16 @@ const columnConfig = {
 // Define the order of columns here - change this array to reorder columns
 const columnOrder: (keyof typeof columnConfig)[] = [
   "sku",     // 1st column
-  "name",    // 2nd column  
-  "purchaseCost",   // 3rd column
+  "productName",    // 2nd column
+  "currentQuantity",   // 3rd column
   "salePrice",       // 4th column
-  "description",
-  "category"
+  "totalStockValue", // 5th column
+  "warehouseName",   // 6th column
   // "id",   // Uncomment to show ID column
 ]
 
 // Generate the columns array based on the order
-export const columns: ColumnDef<Product>[] = columnOrder.map(key => columnConfig[key])
+export const columns: ColumnDef<Stock>[] = columnOrder.map(key => columnConfig[key])
 
 // Alternative: You can also export individual column configs for more flexibility
 export const availableColumns = columnConfig

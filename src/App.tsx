@@ -3,6 +3,7 @@ import Layout from "./layouts/layout"
 import IndexPage from "./pages/Index"
 import InventoryIndexPage from "./pages/InventoryIndex"
 import InventoryProductsIndex from "./pages/InventoryProductsIndex"
+import InventoryStockIndexPage from "./pages/InventoryStockIndex"
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
       <Route path="/" element={<Layout><IndexPage /></Layout>} />
       <Route path="/inventory" element={<Layout><InventoryIndexPage /></Layout>} />
       <Route path="/inventory/products" element={<Layout><InventoryProductsIndex /></Layout>} />
+      <Route path="/inventory/stock" element={<Layout><InventoryStockIndexPage /></Layout>} />
     </Routes>
   )
 }
