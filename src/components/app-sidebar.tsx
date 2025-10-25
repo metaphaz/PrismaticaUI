@@ -1,5 +1,6 @@
 import * as React from "react"
 import {
+  IconBuildingWarehouse,
   IconCamera,
   IconChartBar,
   IconDashboard,
@@ -55,13 +56,18 @@ const data = {
     },
     {
       title: "Purchases",
-      url: "#",
+      url: "/inventory/purchases",
       icon: IconFolder,
     },
     {
       title: "Sales",
-      url: "#",
+      url: "/inventory/sales",
       icon: IconUsers,
+    },
+    {
+      title: "Branches",
+      url: "/inventory/branches",
+      icon: IconBuildingWarehouse,
     },
   ],
   navClouds: [
