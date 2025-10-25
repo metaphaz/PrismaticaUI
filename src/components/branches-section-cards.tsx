@@ -29,6 +29,34 @@ interface Branch {
   } | null
 }
 
+// Function to fetch all stock items for a warehouse (handling pagination)
+async function fetchAllStockItems(warehouseId: string) {
+  const allItems = []
+  let currentPage = 0
+  let totalPages = 1
+
+  while (currentPage < totalPages) {
+    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/stock-levels?warehouseId=${warehouseId}&page=${currentPage}&size=100`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
+      },
+    })
+
+    if (!response.ok) {
+      break
+    }
+
+    const data = await response.json()
+    allItems.push(...data.content)
+    totalPages = data.totalPages
+    currentPage++
+  }
+
+  return allItems
+}
+
 // Function to fetch stock details for a specific branch
 async function getBranchStockDetails(warehouseId: string): Promise<{
   totalValue: number
@@ -38,68 +66,32 @@ async function getBranchStockDetails(warehouseId: string): Promise<{
   totalQuantity: number
 } | null> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/stock-levels?warehouseId=${warehouseId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
-    })
+    // Fetch all stock items for this warehouse
+    const stockItems = await fetchAllStockItems(warehouseId)
     
-    if (!response.ok) {
-      console.warn(`Failed to fetch stock details for warehouse ${warehouseId}`)
-      return null
-    }
-    
-    const data = await response.json()
-    
-    // Handle different possible response formats
-    let stockItems = []
-    if (Array.isArray(data)) {
-      stockItems = data
-    } else if (data && Array.isArray(data.content)) {
-      stockItems = data.content
-    } else if (data && Array.isArray(data.data)) {
-      stockItems = data.data
-    } else if (data && Array.isArray(data.stockItems)) {
-      stockItems = data.stockItems
-    } else {
-      console.warn(`Stock API response for warehouse ${warehouseId} is not in expected format:`, data)
-      return null
-    }
-    
-    // Calculate stock metrics
-    const totalItems = stockItems.length
-    
-    // Use the totalStockValue from API if available, otherwise calculate
-    const totalValue = stockItems.reduce((sum: number, item: any) => {
-      if (item.totalStockValue) {
-        return sum + item.totalStockValue
+    if (stockItems.length === 0) {
+      return {
+        totalValue: 0,
+        lowStockItems: 0,
+        outOfStockItems: 0,
+        totalItems: 0,
+        totalQuantity: 0
       }
-      const quantity = item.currentQuantity || item.quantity || item.currentStock || 0
-      const price = item.salePrice || item.unitPrice || item.price || 0
-      return sum + (quantity * price)
-    }, 0)
+    }
     
-    const lowStockItems = stockItems.filter((item: any) => {
-      const quantity = item.currentQuantity || item.quantity || item.currentStock || 0
-      const minStock = item.reorderLevel || item.minStock || item.minimumStock || 0
-      return quantity > 0 && quantity <= minStock
-    }).length
-    
-    const outOfStockItems = stockItems.filter((item: any) => {
-      const quantity = item.currentQuantity || item.quantity || item.currentStock || 0
-      return quantity === 0
-    }).length
-    
+    // Calculate aggregated stock statistics
+    const totalValue = stockItems.reduce((sum, item) => sum + (item.totalStockValue || 0), 0)
+    const totalQuantity = stockItems.reduce((sum, item) => sum + (item.currentQuantity || 0), 0)
+    const totalItems = stockItems.length
+    const lowStockItems = stockItems.filter(item => item.currentQuantity > 0 && item.currentQuantity <= item.reorderLevel).length
+    const outOfStockItems = stockItems.filter(item => item.currentQuantity === 0).length
+
     return {
       totalValue,
       lowStockItems,
       outOfStockItems,
       totalItems,
-      totalQuantity: stockItems.reduce((sum: number, item: any) => {
-        return sum + (item.currentQuantity || item.quantity || item.currentStock || 0)
-      }, 0)
+      totalQuantity,
     }
   } catch (error) {
     console.error(`Error fetching stock details for warehouse ${warehouseId}:`, error)
@@ -144,7 +136,7 @@ async function getBranchesData(): Promise<Branch[]> {
       id: branch.id || branch.warehouseId || `branch_${Date.now()}_${Math.random()}`,
       name: branch.name || branch.warehouseName || 'Unknown Branch',
       location: branch.location || branch.address || 'Unknown Location',
-      capacity: 10000, // Static capacity for all branches
+      capacity: 50000, // Static capacity for all branches
       currentStock: branch.currentStock || branch.totalStock || 0,
       status: branch.status || (branch.isActive ? 'active' : 'inactive') || 'active'
     }))
