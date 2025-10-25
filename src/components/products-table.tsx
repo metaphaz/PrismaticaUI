@@ -43,7 +43,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { ComboboxItems } from "./ComboboxItems"
-import { IconPlus, IconColumns, IconFilter, IconTrash } from "@tabler/icons-react"
+import { IconPlus, IconColumns } from "@tabler/icons-react"
 
 import {
   Pagination,
@@ -196,7 +196,6 @@ function AddItemDialog({ open, onOpenChange }: { open: boolean, onOpenChange: (o
 function EditDialog<TData>({ item }: { item: TData }) {
   const [open, setOpen] = useState(false)
   const [formData, setFormData] = useState<Record<string, any>>({})
-  const [isDeleting, setIsDeleting] = useState(false)
 
   // Function to initialize form data with current item values
   const initializeFormData = () => {
@@ -260,38 +259,6 @@ function EditDialog<TData>({ item }: { item: TData }) {
     }
   }
 
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
-      return
-    }
-    
-    setIsDeleting(true)
-    try {
-      const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/products/${(item as any).id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
-      })
-      
-      if (response.ok) {
-        console.log('Item deleted successfully')
-        setOpen(false)
-        // Refresh the page after successful deletion
-        window.location.reload()
-      } else {
-        console.error('Failed to delete item')
-        alert('Failed to delete item. Please try again.')
-      }
-    } catch (error) {
-      console.error('Error deleting item:', error)
-      alert('Error deleting item. Please try again.')
-    } finally {
-      setIsDeleting(false)
-    }
-  }
-
   const handleCancel = () => {
     // Reset form data to original values when canceling
     setFormData(initializeFormData())
@@ -340,22 +307,11 @@ function EditDialog<TData>({ item }: { item: TData }) {
               </div>
             ))}
           </div>
-          <div className="flex justify-between gap-2">
-            <Button 
-              type="button" 
-              variant="destructive" 
-              onClick={handleDelete}
-              disabled={isDeleting}
-            >
-              <IconTrash className="mr-2 h-4 w-4" />
-              {isDeleting ? 'Deleting...' : 'Delete'}
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={handleCancel}>
+              Cancel
             </Button>
-            <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button type="submit">Save changes</Button>
-            </div>
+            <Button type="submit">Save changes</Button>
           </div>
         </form>
       </DialogContent>

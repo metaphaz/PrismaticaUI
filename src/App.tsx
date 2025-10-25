@@ -7,6 +7,7 @@ import InventoryStockIndexPage from "./pages/InventoryStockIndex"
 import PurchasesIndexPage from "./pages/PurchasesIndex"
 import SalesIndexPage from "./pages/InventorySalesIndex"
 import BranchesIndexPage from "./pages/InventoryBranchesIndex"
+import BranchDetailsIndex from "./pages/BranchDetailsIndex"
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/inventory/purchases" element={<Layout><PurchasesIndexPage /></Layout>} />
       <Route path="/inventory/sales" element={<Layout><SalesIndexPage /></Layout>} />
       <Route path="/inventory/branches" element={<Layout><BranchesIndexPage /></Layout>} />
+      <Route path="/inventory/branches/:branchId" element={<Layout><BranchDetailsIndex /></Layout>} />
     </Routes>
   )
 }

@@ -1,7 +1,9 @@
-import { IconTrendingDown, IconTrendingUp, IconBuilding, IconPackage, IconTruck } from "@tabler/icons-react"
+import { IconTrendingDown, IconTrendingUp, IconBuilding, IconPackage, IconArrowRight } from "@tabler/icons-react"
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardAction,
@@ -17,8 +19,6 @@ interface Branch {
   location: string
   capacity: number
   currentStock: number
-  activeProducts: number
-  recentTransactions: number
   status: 'active' | 'inactive' | 'maintenance'
   stockDetails?: {
     totalValue: number
@@ -52,7 +52,6 @@ async function getBranchStockDetails(warehouseId: string): Promise<{
     }
     
     const data = await response.json()
-    console.log(`Stock details for warehouse ${warehouseId}:`, data)
     
     // Handle different possible response formats
     let stockItems = []
@@ -93,14 +92,6 @@ async function getBranchStockDetails(warehouseId: string): Promise<{
       return quantity === 0
     }).length
     
-    console.log(`Warehouse ${warehouseId} stock summary:`, {
-      totalItems,
-      totalValue,
-      lowStockItems,
-      outOfStockItems,
-      sampleItem: stockItems[0] // Log first item for debugging
-    })
-    
     return {
       totalValue,
       lowStockItems,
@@ -132,9 +123,8 @@ async function getBranchesData(): Promise<Branch[]> {
     }
     
     const data = await response.json()
-    console.log('Branches API Response:', data)
     
-    // Handle the API response structure
+    // Check if data is an array, if not, try to extract array from response
     let branches = []
     if (Array.isArray(data)) {
       branches = data
@@ -156,8 +146,6 @@ async function getBranchesData(): Promise<Branch[]> {
       location: branch.location || branch.address || 'Unknown Location',
       capacity: 10000, // Static capacity for all branches
       currentStock: branch.currentStock || branch.totalStock || 0,
-      activeProducts: branch.activeProducts || branch.productCount || 0,
-      recentTransactions: branch.recentTransactions || branch.transactionCount || 0,
       status: branch.status || (branch.isActive ? 'active' : 'inactive') || 'active'
     }))
     
@@ -183,6 +171,7 @@ export function BranchesSectionCards() {
   const [branches, setBranches] = useState<Branch[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   // Fetch branches data
   const fetchData = async () => {
@@ -203,24 +192,15 @@ export function BranchesSectionCards() {
     fetchData()
   }, [])
 
+  // Function to navigate to branch details page
+  const handleBranchClick = (branchId: string) => {
+    navigate(`/inventory/branches/${branchId}`)
+  }
+
   // Calculate utilization percentage
   const calculateUtilization = (currentStock: number, capacity: number): number => {
     if (capacity === 0) return 0
     return Math.round((currentStock / capacity) * 100)
-  }
-
-  // Get status badge variant
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'default'
-      case 'inactive':
-        return 'secondary'
-      case 'maintenance':
-        return 'destructive'
-      default:
-        return 'outline'
-    }
   }
 
   // Get utilization trend icon and variant
@@ -266,18 +246,25 @@ export function BranchesSectionCards() {
                   <IconBuilding className="size-4" />
                   {branch.location}
                 </CardDescription>
-                <Badge variant={getStatusVariant(branch.status)}>
-                  {branch.status}
-                </Badge>
               </div>
               <CardTitle className="text-xl font-semibold @[250px]/card:text-2xl">
                 {branch.name}
               </CardTitle>
               <CardAction>
-                <Badge variant={trend.variant}>
-                  {trend.icon}
-                  {utilization}% utilized
-                </Badge>
+                <div className="flex items-center justify-between w-full">
+                  <Badge variant={trend.variant}>
+                    {trend.icon}
+                    {utilization}% utilized
+                  </Badge>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => handleBranchClick(branch.id)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <IconArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </CardAction>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
@@ -292,10 +279,6 @@ export function BranchesSectionCards() {
                 <div className="flex justify-between items-center text-muted-foreground">
                   <span>Capacity</span>
                   <span>{branch.capacity.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between items-center text-muted-foreground">
-                  <span>Active Products</span>
-                  <span>{branch.stockDetails?.totalItems ?? branch.activeProducts}</span>
                 </div>
                 {branch.stockDetails && (
                   <>
@@ -313,13 +296,6 @@ export function BranchesSectionCards() {
                     </div>
                   </>
                 )}
-                <div className="line-clamp-1 flex justify-between items-center">
-                  <span className="flex items-center gap-1 font-medium">
-                    <IconTruck className="size-4" />
-                    Recent Activity
-                  </span>
-                  <span className="font-medium">{branch.recentTransactions}</span>
-                </div>
               </div>
               <div className="text-muted-foreground text-xs pt-1">
                 {trend.text}

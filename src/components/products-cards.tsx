@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
-import { columns, type Product, availableColumns, defaultColumnOrder } from "./products-columns"
+import { columns, type Product } from "./products-columns"
 import { DataTable } from "./products-table"
-import { type ColumnDef } from "@tanstack/react-table"
 
 async function getData(limit?: string, page?: number): Promise<{ data: Product[], totalPages: number }> {
   try {
@@ -81,30 +80,6 @@ export function ProductsCards() {
     const [itemsPerPage, setItemsPerPage] = useState<string>("10") // Default to 10 items
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [totalPages, setTotalPages] = useState<number>(1)
-    
-    // Dynamic column management
-    const [columnOrder, setColumnOrder] = useState(defaultColumnOrder)
-    const [dynamicColumns, setDynamicColumns] = useState<ColumnDef<Product>[]>(columns)
-
-    // Function to reorder columns
-    const reorderColumns = (newOrder: (keyof typeof availableColumns)[]) => {
-        const newColumns = newOrder.map(key => availableColumns[key])
-        setColumnOrder(newOrder)
-        setDynamicColumns(newColumns)
-    }
-
-    // Function to toggle column visibility
-    const toggleColumn = (columnKey: keyof typeof availableColumns) => {
-        if (columnOrder.includes(columnKey)) {
-            // Remove column
-            const newOrder = columnOrder.filter(key => key !== columnKey)
-            reorderColumns(newOrder)
-        } else {
-            // Add column
-            const newOrder = [...columnOrder, columnKey]
-            reorderColumns(newOrder)
-        }
-    }
 
     // Function to handle items per page change from combobox
     const handleItemsPerPageChange = (value: string) => {
@@ -185,7 +160,7 @@ export function ProductsCards() {
             */}
             
             <DataTable 
-                columns={dynamicColumns} 
+                columns={columns} 
                 data={data} 
                 onItemsPerPageChange={handleItemsPerPageChange}
                 onPageChange={handlePageChange}

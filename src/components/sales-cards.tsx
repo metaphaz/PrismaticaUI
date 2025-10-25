@@ -3,10 +3,14 @@ import { columns, type Sale } from "./sales-columns"
 import { SalesDataTable } from "./sales-table"
 import { AddSalesCard } from "./add-sales-card"
 
-// Function for fetching sales data from API
-async function getSalesData(_limit?: string, _page?: number): Promise<{ data: Sale[], totalPages: number }> {
+// Function for fetching sales data from API with server-side pagination
+async function getSalesData(limit: string = "10", page: number = 1): Promise<{ data: Sale[], totalPages: number, totalElements: number }> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/transactions?page=0&size=1000000&types=SALE`, {
+    // Convert page from 1-based to 0-based for API
+    const apiPage = page - 1
+    const size = parseInt(limit)
+    
+    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/transactions?page=${apiPage}&size=${size}&types=SALE`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -23,14 +27,25 @@ async function getSalesData(_limit?: string, _page?: number): Promise<{ data: Sa
     
     // Handle the API response structure
     let transactions = []
+    let totalPages = 1
+    let totalElements = 0
+    
     if (Array.isArray(data)) {
       transactions = data
+      totalElements = data.length
+      totalPages = Math.ceil(totalElements / size)
     } else if (data && Array.isArray(data.content)) {
       transactions = data.content
+      totalPages = data.totalPages || 1
+      totalElements = data.totalElements || transactions.length
     } else if (data && Array.isArray(data.data)) {
       transactions = data.data
+      totalPages = data.totalPages || 1
+      totalElements = data.totalElements || transactions.length
     } else if (data && Array.isArray(data.transactions)) {
       transactions = data.transactions
+      totalPages = data.totalPages || 1
+      totalElements = data.totalElements || transactions.length
     } else {
       console.warn('Sales API response is not in expected format:', data)
       transactions = []
@@ -50,15 +65,19 @@ async function getSalesData(_limit?: string, _page?: number): Promise<{ data: Sa
       transactionType: transaction.type || transaction.transactionType || 'SALE'
     }))
     
+    console.log(`Fetched page ${page} with ${sales.length} items. Total pages: ${totalPages}, Total elements: ${totalElements}`)
+    
     return {
       data: sales,
-      totalPages: 1 // Since we're fetching all data at once
+      totalPages,
+      totalElements
     }
   } catch (error) {
     console.error('Error fetching sales data:', error)
     return {
       data: [],
-      totalPages: 1
+      totalPages: 1,
+      totalElements: 0
     }
   }
 }
@@ -85,7 +104,7 @@ export function SalesCards() {
   }
 
   // Function to fetch sales data
-  const fetchData = async (limit?: string, page?: number) => {
+  const fetchData = async (limit: string = "10", page: number = 1) => {
     try {
       setLoading(true)
       setError(null)
