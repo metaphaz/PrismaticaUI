@@ -1,6 +1,6 @@
 # PrismaticaUI
 
-![PrismaticaUI Logo](src/assets/PrismAgents.jpeg)
+![PrismaticaUI Logo](src/assets/Prismatica.jpeg)
 
 ## 📋 Project Description and Purpose
 
