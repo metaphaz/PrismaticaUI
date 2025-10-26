@@ -209,7 +209,7 @@ export function AddSalesCard({ onSaleAdded }: AddSalesCardProps) {
       const processedData = {
         productId: formData.productId,
         warehouseId: formData.warehouseId,
-        quantityChange: parseFloat(formData.currentQuantity) || 0,
+        quantityChange: -parseFloat(formData.currentQuantity) || 0,
         type: 'SALE',
         referenceId: null,
         transactionAmount: parseFloat(formData.transactionAmount) || 0,
