@@ -1,27 +1,21 @@
 import { useState, useEffect } from "react"
 import { columns, type Product } from "./products-columns"
 import { DataTable } from "./products-table"
+import { apiRequest } from "@/lib/config"
 
 async function getData(limit?: string, page?: number): Promise<{ data: Product[], totalPages: number }> {
   try {
     // Build the URL with limit and page parameters
-    const baseUrl = 'https://ae8aa5699e02.ngrok-free.app/api/products'
     const params = new URLSearchParams()
     
     if (limit) params.append('size', limit)
     if (page !== undefined) params.append('page', (page - 1).toString()) // Convert to 0-based indexing
     
-    const url = `${baseUrl}?${params.toString()}`
+    const endpoint = `api/products?${params.toString()}`
     
     // Make API call to fetch data
-    const response = await fetch(url, {
+    const response = await apiRequest(endpoint, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true', // Add this header for ngrok
-        'Accept': 'application/json',
-      },
-      mode: 'cors', // Explicitly set CORS mode
     })
     
     if (!response.ok) {

@@ -31,7 +31,7 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ComboboxItems } from "./ComboboxItems"
+import { ComboboxItems } from "./ui/combobox-items-per-page"
 import { IconColumns } from "@tabler/icons-react"
 
 import {

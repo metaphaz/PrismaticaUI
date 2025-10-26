@@ -1,6 +1,7 @@
 import { IconTrendingDown, IconTrendingUp, IconBuilding, IconPackage, IconArrowRight } from "@tabler/icons-react"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { apiRequest } from "@/lib/config"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -36,12 +37,8 @@ async function fetchAllStockItems(warehouseId: string) {
   let totalPages = 1
 
   while (currentPage < totalPages) {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/stock-levels?warehouseId=${warehouseId}&page=${currentPage}&size=100`, {
+    const response = await apiRequest(`api/inventory/reports/stock-levels?warehouseId=${warehouseId}&page=${currentPage}&size=100`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
 
     if (!response.ok) {
@@ -102,12 +99,8 @@ async function getBranchStockDetails(warehouseId: string): Promise<{
 // Function to fetch branches data from API
 async function getBranchesData(): Promise<Branch[]> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/warehouses`, {
+    const response = await apiRequest('api/warehouses', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
     
     if (!response.ok) {

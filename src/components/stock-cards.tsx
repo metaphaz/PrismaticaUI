@@ -1,27 +1,21 @@
 import { useState, useEffect } from "react"
 import { columns, type Stock } from "./stock-columns"
 import { StockDataTable } from "./stock-table"
+import { apiRequest } from "@/lib/config"
 
 async function getData(limit?: string, page?: number): Promise<{ data: Stock[], totalPages: number }> {
   try {
     // Build the URL with limit and page parameters - using inventory endpoint
-    const baseUrl = 'https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/stock-levels'
     const params = new URLSearchParams()
     
     if (limit) params.append('size', limit)
     if (page !== undefined) params.append('page', (page - 1).toString()) // Convert to 0-based indexing
     
-    const url = `${baseUrl}?${params.toString()}`
+    const endpoint = `api/inventory/reports/stock-levels?${params.toString()}`
     
     // Make API call to fetch data
-    const response = await fetch(url, {
+    const response = await apiRequest(endpoint, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true', // Add this header for ngrok
-        'Accept': 'application/json',
-      },
-      mode: 'cors', // Explicitly set CORS mode
     })
     
     if (!response.ok) {

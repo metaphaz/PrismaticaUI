@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import ReactMarkdown from "react-markdown"
+import { apiRequest } from "@/lib/config"
 import {
   Card,
   CardContent,
@@ -30,12 +31,8 @@ export function InventoryActionCard() {
 
     try {
       // Replace with your actual API endpoint
-      const response = await fetch('https://ae8aa5699e02.ngrok-free.app/api/ai/generate-inventory-summary', {
+      const response = await apiRequest('api/ai/generate-inventory-summary', {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
       })
 
       if (response.ok) {

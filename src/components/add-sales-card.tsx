@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { toast } from "sonner"
+import { apiRequest } from "@/lib/config"
 
 interface AddSalesCardProps {
   onSaleAdded: () => void
@@ -50,12 +51,8 @@ export function AddSalesCard({ onSaleAdded }: AddSalesCardProps) {
 
     try {
       // Fetch from products API to get available SKUs with query parameter
-      const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/products/search?sku=${encodeURIComponent(query)}`, {
+      const response = await apiRequest(`api/products/search?sku=${encodeURIComponent(query)}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
       })
       
       if (response.ok) {
@@ -104,12 +101,8 @@ export function AddSalesCard({ onSaleAdded }: AddSalesCardProps) {
     }
 
     try {
-      const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/warehouses/search?name=${encodeURIComponent(query)}`, {
+      const response = await apiRequest(`api/warehouses/search?name=${encodeURIComponent(query)}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
       })
       
       if (response.ok) {
@@ -216,11 +209,9 @@ export function AddSalesCard({ onSaleAdded }: AddSalesCardProps) {
       }
 
       // Use the same API endpoint as the stock add button
-      const response = await fetch('https://ae8aa5699e02.ngrok-free.app/api/inventory/transaction', {
+      const response = await apiRequest('api/inventory/transaction', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
           'Accept': 'application/json',
         },
         body: JSON.stringify(processedData)

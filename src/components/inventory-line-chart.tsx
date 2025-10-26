@@ -2,6 +2,7 @@
 
 import { Line, LineChart, XAxis, YAxis } from "recharts"
 import { useState, useEffect } from "react"
+import { apiRequest } from "@/lib/config"
 
 import {
   Card,
@@ -48,12 +49,8 @@ export function InventoryLineChart() {
         const startDateISO = startDate.toISOString()
         const endDateISO = endDate.toISOString()
         
-        const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/turnover-over-time?interval=WEEK&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
+        const response = await apiRequest(`api/inventory/reports/turnover-over-time?interval=WEEK&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         if (response.ok) {

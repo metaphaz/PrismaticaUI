@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ComboboxItems } from "./ComboboxItems"
+import { ComboboxItems } from "./ui/combobox-items-per-page"
 import { type Purchase } from "./purchases-columns"
 
 interface PurchasesDataTableProps<TData, TValue> {

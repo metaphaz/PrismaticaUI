@@ -1,5 +1,6 @@
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
 import { useState, useEffect } from "react"
+import { apiRequest } from "@/lib/config"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -57,12 +58,8 @@ export function InventorySectionCards() {
   useEffect(() => {
     const fetchTotalQuantity = async () => {
       try {
-        const response = await fetch('https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/total-quantity', {
+        const response = await apiRequest('api/inventory/reports/total-quantity', {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         if (response.ok) {
@@ -101,12 +98,8 @@ export function InventorySectionCards() {
   useEffect(() => {
     const fetchLowStockCount = async () => {
       try {
-        const response = await fetch('https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/low-stock', {
+        const response = await apiRequest('api/inventory/reports/low-stock', {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         if (response.ok) {
@@ -218,21 +211,13 @@ export function InventorySectionCards() {
         console.log('Fetching previous sales from:', prevStartDateISO, 'to:', prevEndDateISO)
         
         // Fetch current period data
-        const currentResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/summary?types=SALE&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
+        const currentResponse = await apiRequest(`api/inventory/reports/summary?types=SALE&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Fetch previous period data
-        const previousResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/summary?types=SALE&startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
+        const previousResponse = await apiRequest(`api/inventory/reports/summary?types=SALE&startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Parse current period data
@@ -332,21 +317,13 @@ export function InventorySectionCards() {
         console.log('Fetching previous purchases from:', prevStartDateISO, 'to:', prevEndDateISO)
         
         // Fetch current period data
-        const currentResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/summary?types=PURCHASE&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
+        const currentResponse = await apiRequest(`api/inventory/reports/summary?types=PURCHASE&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Fetch previous period data
-        const previousResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/summary?types=PURCHASE&startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
+        const previousResponse = await apiRequest(`api/inventory/reports/summary?types=PURCHASE&startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Parse current period data
@@ -446,21 +423,13 @@ export function InventorySectionCards() {
         console.log('Fetching previous returns from:', prevStartDateISO, 'to:', prevEndDateISO)
         
         // Fetch current period data
-        const currentResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/summary?types=RETURN&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
+        const currentResponse = await apiRequest(`api/inventory/reports/summary?types=RETURN&startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Fetch previous period data
-        const previousResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/summary?types=RETURN&startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
+        const previousResponse = await apiRequest(`api/inventory/reports/summary?types=RETURN&startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Parse current period data
@@ -560,21 +529,13 @@ export function InventorySectionCards() {
         console.log('Fetching previous turnover rate from:', prevStartDateISO, 'to:', prevEndDateISO)
         
         // Fetch current period data
-        const currentResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/turnover-total?startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
+        const currentResponse = await apiRequest(`api/inventory/reports/turnover-total?startDate=${encodeURIComponent(startDateISO)}&endDate=${encodeURIComponent(endDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Fetch previous period data
-        const previousResponse = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/turnover-total?startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
+        const previousResponse = await apiRequest(`api/inventory/reports/turnover-total?startDate=${encodeURIComponent(prevStartDateISO)}&endDate=${encodeURIComponent(prevEndDateISO)}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
         })
         
         // Parse current period data

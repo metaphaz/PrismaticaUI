@@ -42,8 +42,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { ComboboxItems } from "./ComboboxItems"
+import { ComboboxItems } from "./ui/combobox-items-per-page"
 import { IconPlus, IconColumns } from "@tabler/icons-react"
+import { apiRequest } from "@/lib/config"
 
 import {
   Pagination,
@@ -99,12 +100,8 @@ function AddItemDialog({ open, onOpenChange }: { open: boolean, onOpenChange: (o
       })
 
       // Make API call to create new item
-      const response = await fetch('https://ae8aa5699e02.ngrok-free.app/api/products', {
+      const response = await apiRequest('api/products', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
         body: JSON.stringify(processedData),
       })
       
@@ -237,12 +234,8 @@ function EditDialog<TData>({ item }: { item: TData }) {
       })
 
       // Make API call to update the item
-      const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/products/${(item as any).id}`, {
+      const response = await apiRequest(`api/products/${(item as any).id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true',
-        },
         body: JSON.stringify(processedData),
       })
       

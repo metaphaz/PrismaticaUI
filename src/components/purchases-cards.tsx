@@ -2,16 +2,13 @@ import { useState, useEffect } from "react"
 import { columns, type Purchase } from "./purchases-columns"
 import { PurchasesDataTable } from "./purchases-table"
 import { AddPurchaseCard } from "./add-purchase-card"
+import { apiRequest } from "@/lib/config"
 
 // Function for fetching purchases data from API
 async function getPurchasesData(_limit?: string, _page?: number): Promise<{ data: Purchase[], totalPages: number }> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/transactions?page=0&size=1000000&types=PURCHASE`, {
+    const response = await apiRequest('api/inventory/transactions?page=0&size=1000000&types=PURCHASE', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
     
     if (!response.ok) {

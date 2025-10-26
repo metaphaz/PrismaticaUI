@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { columns, type Sale } from "./sales-columns"
 import { SalesDataTable } from "./sales-table"
 import { AddSalesCard } from "./add-sales-card"
+import { apiRequest } from "@/lib/config"
 
 // Function for fetching sales data from API with server-side pagination
 async function getSalesData(limit: string = "10", page: number = 1): Promise<{ data: Sale[], totalPages: number, totalElements: number }> {
@@ -10,12 +11,8 @@ async function getSalesData(limit: string = "10", page: number = 1): Promise<{ d
     const apiPage = page - 1
     const size = parseInt(limit)
     
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/transactions?page=${apiPage}&size=${size}&types=SALE`, {
+    const response = await apiRequest(`api/inventory/transactions?page=${apiPage}&size=${size}&types=SALE`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
     
     if (!response.ok) {

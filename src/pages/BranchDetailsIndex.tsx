@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { apiRequest } from "@/lib/config"
 
 interface BranchDetails {
   id: string
@@ -49,12 +50,8 @@ interface ProductDetails {
 // Function to fetch AI insights for a specific branch
 async function getAIInsights(branchId: string): Promise<string | null> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/ai/analysis/store/${branchId}/report`, {
+    const response = await apiRequest(`api/ai/analysis/store/${branchId}/report`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
     
     if (!response.ok) {
@@ -74,12 +71,8 @@ async function getAIInsights(branchId: string): Promise<string | null> {
 // Function to fetch purchase orders for a specific branch
 async function getPurchaseOrders(branchId: string): Promise<PurchaseOrder[]> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/ai/analysis/store/${branchId}/json`, {
+    const response = await apiRequest(`api/ai/analysis/store/${branchId}/json`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
     
     if (!response.ok) {
@@ -98,12 +91,8 @@ async function getPurchaseOrders(branchId: string): Promise<PurchaseOrder[]> {
 // Function to fetch product details by SKU
 async function getProductDetails(sku: string): Promise<ProductDetails | null> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/products/search?sku=${sku}&page=0&size=100000`, {
+    const response = await apiRequest(`api/products/search?sku=${sku}&page=0&size=100000`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
     
     if (!response.ok) {
@@ -147,12 +136,8 @@ async function createPurchaseTransaction(
       transactionAmount
     }
     
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/transaction`, {
+    const response = await apiRequest('api/inventory/transaction', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
       body: JSON.stringify(transactionData)
     })
     
@@ -175,12 +160,8 @@ async function fetchAllStockItems(warehouseId: string) {
   let totalPages = 1
 
   while (currentPage < totalPages) {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/inventory/reports/stock-levels?warehouseId=${warehouseId}&page=${currentPage}&size=100`, {
+    const response = await apiRequest(`api/inventory/reports/stock-levels?warehouseId=${warehouseId}&page=${currentPage}&size=100`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
 
     if (!response.ok) {
@@ -199,12 +180,8 @@ async function fetchAllStockItems(warehouseId: string) {
 // Function to fetch branch details from API
 async function getBranchDetails(branchId: string): Promise<BranchDetails | null> {
   try {
-    const response = await fetch(`https://ae8aa5699e02.ngrok-free.app/api/warehouses/${branchId}`, {
+    const response = await apiRequest(`api/warehouses/${branchId}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-      },
     })
     
     if (!response.ok) {
