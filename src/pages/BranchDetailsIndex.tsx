@@ -403,7 +403,7 @@ export default function BranchDetailsIndex() {
 
   useEffect(() => {
     if (!branchId) {
-      navigate('/inventory/branches')
+      navigate('/branches')
       return
     }
 
@@ -514,7 +514,7 @@ export default function BranchDetailsIndex() {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
         <div className="text-lg text-red-500">{error || 'Branch not found'}</div>
-        <Button onClick={() => navigate('/inventory/branches')}>
+        <Button onClick={() => navigate('/branches')}>
           <IconArrowLeft className="mr-2 h-4 w-4" />
           Back to Branches
         </Button>
@@ -536,7 +536,7 @@ export default function BranchDetailsIndex() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate('/inventory/branches')}
+              onClick={() => navigate('/branches')}
               className="h-8 w-8"
             >
               <IconArrowLeft className="h-4 w-4" />
@@ -544,7 +544,7 @@ export default function BranchDetailsIndex() {
             <div className="flex items-center justify-between w-full">
               <Button
                 variant="ghost"
-                onClick={() => navigate('/inventory/branches')}
+                onClick={() => navigate('/branches')}
                 className="p-0 h-auto text-left"
               >
               </Button>

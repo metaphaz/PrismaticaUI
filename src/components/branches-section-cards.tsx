@@ -179,7 +179,7 @@ export function BranchesSectionCards() {
 
   // Function to navigate to branch details page
   const handleBranchClick = (branchId: string) => {
-    navigate(`/inventory/branches/${branchId}`)
+    navigate(`/branches/${branchId}`)
   }
 
   // Calculate utilization percentage
